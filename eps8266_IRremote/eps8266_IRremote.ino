@@ -21,25 +21,6 @@ unsigned long longPressThreashold = 500;//收到hold请求,从按下到切换成
 unsigned long triggerTimeout = 305; //超时时间一定要大于loop delay时间. 毫秒之后触发trigger
 String keyHoldSignal = "FFFFFFFFFFFFFFFF"; //hold信号
 
-String convertToString(char *a, int size){
-  int i;
-  String s = "";
-  for (i = 0; i < size; i++){
-    s = s + a[i];
-  }
-  return s;
-}
-
-void setup() {
-  Serial.begin(115200);
-  irrecv.enableIRIn();  // Start the receiver
-  while (!Serial)  // Wait for the serial connection to be establised.
-    delay(50);
-  Serial.println();
-  Serial.print("IRrecvDemo is now running and waiting for IR message on Pin ");
-  Serial.println(kRecvPin);
-}
-
 void keyRelease(){
   if(keyMode == CLICK_PRESS){
     Serial.printf("点按 key: %s \n", key.c_str());
@@ -59,7 +40,7 @@ void longPressStart(){
   //todo 
 }
 
-void receive(){
+void IRReceive(){
   if(keyMode != KEY_NULL && key != ""){
     unsigned long timeout = triggerTimeout;
     //让长按的超时时间是普通点击的2倍,避免长按中途短时间信号丢失被释放.
@@ -75,10 +56,10 @@ void receive(){
     return;
   }
 
-  char keyBuffer[16];
+  char keyBuffer[19];
   sprintf(keyBuffer, "%llX", results.value);
-  String keyStr = convertToString(keyBuffer, 16);
-  
+  String keyStr(keyBuffer);
+
   if(keyStr == keyHoldSignal && keyMode == CLICK_PRESS){
     //当按钮接收到hold请求超过500毫秒后,将点按切换成长按状态
     if(millis() - keyPressTime > longPressThreashold ){ 
@@ -101,7 +82,17 @@ void receive(){
   preReceivePressTime = millis();
 }
 
+void setup() {
+  Serial.begin(115200);
+  irrecv.enableIRIn();  // Start the receiver
+  while (!Serial)  // Wait for the serial connection to be establised.
+    delay(50);
+  Serial.println();
+  Serial.print("IRrecvDemo is now running and waiting for IR message on Pin ");
+  Serial.println(kRecvPin);
+}
+
 void loop() {
-  receive();
+  IRReceive();
   delay(100);
 }
