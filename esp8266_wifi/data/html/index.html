@@ -1,0 +1,46 @@
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content = "text/html;charset=utf-8" />
+  <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta content="yes" name="apple-mobile-web-app-capable" />
+  <meta content="black" name="apple-mobile-web-app-status-bar-style" />
+  <meta content="telephone=no" name="format-detection" />
+  <meta content="email=no" name="format-detection" />
+
+  <script>
+    function submit() {
+      let ssid = document.getElementById('ssid').value;;
+      let pwd = document.getElementById('pwd').value;;
+      let form = document.getElementById('wifi-form');
+      form.action = `/wifisets?ssid=${ssid}&password=${pwd}`
+      form.submit()
+    }
+  </script>
+  <style type="text/css">
+    input{
+      border-width: 1px;
+      border-color: "#000000";
+    }
+    button{
+      border: 1px solid gray;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>设置wifi</h1>
+  <form action="/wifisets" method="POST" id="wifi-form">
+    <p>WiFi名字:
+      <input type="text" id='ssid' name="ssid" />
+    </p>
+    <p>WiFi密码:
+      <input type="text" id='pwd' name="password" />
+    </p>
+  </form>
+  <button type="button" onclick="submit()">提交</button>
+</body>
+
+
+
+</html>
